@@ -16,36 +16,40 @@ jobs:
       contents: write
     environment: KyptonApi
     steps:
-      - name: checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: validate gradle wrapper
+      - name: Validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
 
-      - name: setup jdk
+      - name: Setup jdk
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'microsoft'
 
-      - name: make gradle wrapper executable
+      - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: build
+      - name: Build
         run: ./gradlew build
 
-      - name: capture build artifacts
+      - name: Capture build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: build/libs/
 
+      - name: Get Version Number
+        id: get-version
+        uses: ./.github/actions/GetVersionNumber
+
       - name: Create Git Tag
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag v${{ github.run_number }}
-          git push origin v${{ github.run_number }}
+          git config user.name "${{ secrets.CREATORNAME }}"
+          git config user.email "${{ secrets.MYEMAIL }}"
+          git tag ${{ steps.get-version.outputs.mod-version }}
+          git push origin ${{ steps.get-version.outputs.mod-version }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -57,3 +61,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: success()
