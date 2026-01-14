@@ -42,7 +42,9 @@ jobs:
 
       - name: Get Version Number
         id: get-version
-        uses: ./.github/actions/GetVersionNumber
+        run: |
+          VERSION=$(sed -n 's/^mod-version=\(.*\)/\1/p' gradle.properties)
+          echo "mod-version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Git Tag
         run: |
@@ -54,7 +56,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.get-version.outputs.mod-version }}
+          tag_name: ${{ steps.get-version.outputs.mod-version }}
           files: build/libs/*.jar
           body: "Automatic release for Fabric ${{ github.ref_name }}"
           draft: false
