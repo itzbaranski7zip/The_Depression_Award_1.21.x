@@ -54,7 +54,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
+          tag_name: v${{ steps.get-version.outputs.mod-version }}
           files: build/libs/*.jar
           body: "Automatic release for Fabric ${{ github.ref_name }}"
           draft: false
