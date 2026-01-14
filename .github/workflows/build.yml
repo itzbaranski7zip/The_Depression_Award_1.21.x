@@ -43,7 +43,7 @@ jobs:
       - name: Get Version Number
         id: get-version
         run: |
-          VERSION=$(sed -n 's/^mod-version=\(.*\)/\1/p' gradle.properties | tr -d '\r')
+          VERSION=$(grep "^mod_version=" "gradle.properties" | cut -d'=' -f2-)
           echo "mod-version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Git Tag
