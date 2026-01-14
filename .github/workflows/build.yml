@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    environment: KyptonApi
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -37,9 +38,17 @@ jobs:
           name: Artifacts
           path: build/libs/
 
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag v${{ github.run_number }}
+          git push origin v${{ github.run_number }}
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ github.run_number }}
           files: build/libs/*.jar
           body: "Automatic release for Fabric ${{ github.ref_name }}"
           draft: false
