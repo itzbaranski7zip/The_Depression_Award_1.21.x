@@ -44,5 +44,5 @@ jobs:
           body: "Automatic release for Fabric ${{ github.ref_name }}"
           draft: false
           prerelease: false
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
